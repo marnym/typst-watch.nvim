@@ -7,7 +7,7 @@ local ErrorInfo = {
     message = "",
     compilation_error_line = nil,
     error_line_seen = false,
-    last_empty_line = -1
+    last_empty_line = -1,
 }
 ErrorInfo.__index = ErrorInfo
 

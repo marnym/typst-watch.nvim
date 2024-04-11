@@ -12,7 +12,7 @@ local state = require("typst-watch.state")
 
 --- @param opts TypstWatchConfig
 function M.setup(opts)
-    M._config = vim.tbl_deep_extend('force', M._config, opts)
+    M._config = vim.tbl_deep_extend("force", M._config, opts)
 
     if not M._config.preview_cmd then
         local uname = vim.uv.os_uname().sysname
@@ -77,8 +77,8 @@ function M.watch(file)
 
     state:reset()
     state.main_file = file
-    state.process = vim.system({ "typst", "watch", file },
-        { text = true, stderr = on_stderr })
+    state.process = vim.system({ "typst", "watch", file, },
+        { text = true, stderr = on_stderr, })
 end
 
 function M.stop()
@@ -94,7 +94,7 @@ function M.open_preview(_cmd, _file)
         pdf = state.main_file:match("(.*)%.typ") .. ".pdf"
     end
     -- todo: support array for preview cmd and merge
-    vim.system({ cmd, pdf }, { detach = true })
+    vim.system({ cmd, pdf, }, { detach = true, })
 end
 
 return M
