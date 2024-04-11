@@ -7,6 +7,10 @@ vim.api.nvim_buf_create_user_command(0, "TypstWatch",
     function(opts) typst_watch.watch(opts.fargs[1] or vim.fn.expand("%:p")) end,
     { nargs = "?", complete = "file", desc = "Start typst watch process" })
 
+vim.api.nvim_buf_create_user_command(0, "TypstWatchStop",
+    function(opts) typst_watch.stop() end,
+    { nargs = "?", complete = "file", desc = "Start typst watch process" })
+
 if not vim.g.did_typst_watch_initialize then
     local main = vim.fn.findfile("main.typ", ".;")
     if main ~= "" then

@@ -81,6 +81,10 @@ function M.watch(file)
         { text = true, stderr = on_stderr })
 end
 
+function M.stop()
+    state:reset()
+end
+
 ---@param _cmd string?
 ---@param _file string?
 function M.open_preview(_cmd, _file)
