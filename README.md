@@ -14,6 +14,8 @@
 
 - The compiled document can be opened with `:TypstPreview`
 
+- Notifies the user of the compilation result
+
 ## Installation
 
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
