@@ -90,11 +90,25 @@ end
 function M.open_preview(_cmd, _file)
     local cmd = _cmd or M._config.preview_cmd
     local pdf = _file
-    if not pdf then
-        pdf = state.main_file:match("(.*)%.typ") .. ".pdf"
+    if not pdf and state.main_file then
+        local without_extension = state.main_file:match("(.*)%.typ")
+        if without_extension then
+            pdf = without_extension .. ".pdf"
+        end
     end
-    -- todo: support array for preview cmd and merge
-    vim.system({ cmd, pdf, }, { detach = true, })
+
+    if pdf == nil or pdf == "" then
+        return vim.print("Missing PDF file argument")
+    end
+
+    vim.uv.fs_stat(pdf, function(err, stat)
+        if stat and not err then
+            -- todo: support array for preview cmd and merge
+            pcall(function() vim.system({ cmd, pdf, }, { detach = true, }) end)
+        else
+            vim.print("PDF file missing: " .. pdf)
+        end
+    end)
 end
 
 return M
