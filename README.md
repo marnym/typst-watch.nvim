@@ -37,6 +37,6 @@ The following options are available in **typst-watch.nvim**:
 ``` lua
 {
     -- Command that opens the compiled document.
-    preview_cmd = "xdg-open", -- or open on macOS
+    preview_cmd = {"xdg-open",}, -- or open on macOS
 }
 ```

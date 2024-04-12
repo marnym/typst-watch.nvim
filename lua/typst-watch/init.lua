@@ -4,7 +4,7 @@
 local M = {}
 
 --- @class TypstWatchConfig
---- @field preview_cmd string
+--- @field preview_cmd string[]
 M._config = {}
 
 local ErrorInfo = require("typst-watch.error_info")
@@ -14,12 +14,14 @@ local state = require("typst-watch.state")
 function M.setup(opts)
     M._config = vim.tbl_deep_extend("force", M._config, opts)
 
-    if not M._config.preview_cmd then
+    if M._config.preview_cmd then
+        assert(type(M._config.preview_cmd) == "table", "preview_cmd needs to be of type string[]")
+    else
         local uname = vim.uv.os_uname().sysname
         if uname == "Linux" then
-            M._config.preview_cmd = "xdg-open"
+            M._config.preview_cmd = { "xdg-open", }
         elseif uname == "Darwin" then
-            M._config.preview_cmd = "open"
+            M._config.preview_cmd = { "open", }
         else
             return vim.print("Unsupported OS")
         end
@@ -85,10 +87,10 @@ function M.stop()
     state:reset()
 end
 
----@param _cmd string?
+---@param _cmd string[]
 ---@param _file string?
 function M.open_preview(_cmd, _file)
-    local cmd = _cmd or M._config.preview_cmd
+    local cmd = _cmd and #_cmd == 0 and _cmd or vim.deepcopy(M._config.preview_cmd)
     local pdf = _file
     if not pdf and state.main_file then
         local without_extension = state.main_file:match("(.*)%.typ")
@@ -103,8 +105,8 @@ function M.open_preview(_cmd, _file)
 
     vim.uv.fs_stat(pdf, function(err, stat)
         if stat and not err then
-            -- todo: support array for preview cmd and merge
-            pcall(function() vim.system({ cmd, pdf, }, { detach = true, }) end)
+            table.insert(cmd, pdf)
+            pcall(function() vim.system(cmd, { detach = true, }) end)
         else
             vim.print("PDF file missing: " .. pdf)
         end
