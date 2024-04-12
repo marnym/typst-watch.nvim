@@ -6,6 +6,8 @@
 
 - Neovim >= `0.10.0`
 
+- [typst](https://github.com/typst/typst)
+
 ## Features
 
 - Searches for `main.typ`, and starts `typst watch main.typ`
