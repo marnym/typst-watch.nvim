@@ -22,6 +22,8 @@ function M.setup(opts)
             M._config.preview_cmd = { "xdg-open", }
         elseif uname == "Darwin" then
             M._config.preview_cmd = { "open", }
+        elseif uname == "Windows_NT" then
+            M._config.preview_cmd = { "cmd.exe", "/c", "start" }
         else
             return vim.print("Unsupported OS")
         end
