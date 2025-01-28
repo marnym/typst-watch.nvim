@@ -23,11 +23,15 @@ function M.setup(opts)
         elseif uname == "Darwin" then
             M._config.preview_cmd = { "open", }
         elseif uname == "Windows_NT" then
-            M._config.preview_cmd = { "cmd.exe", "/c", "start" }
+            M._config.preview_cmd = { "cmd.exe", "/c", "start", }
         else
             return vim.print("Unsupported OS")
         end
     end
+
+    vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = M.stop,
+    })
 end
 
 ---@param err string
@@ -82,7 +86,7 @@ function M.watch(file)
     state:reset()
     state.main_file = file
     state.process = vim.system({ "typst", "watch", file, },
-        { text = true, stderr = on_stderr, })
+        { text = true, detach = false, stderr = on_stderr, })
 end
 
 function M.stop()
@@ -108,7 +112,7 @@ function M.open_preview(_cmd, _file)
     vim.uv.fs_stat(pdf, function(err, stat)
         if stat and not err then
             table.insert(cmd, pdf)
-            pcall(function() vim.system(cmd, { detach = true, }) end)
+            state.preview_process = vim.system(cmd, { detach = false, })
         else
             vim.print("PDF file missing: " .. pdf)
         end
